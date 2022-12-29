@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">WalkingGame</string>
+    <string name="main_title">MAIN</string>
+    <string name="authority_title">Authority</string>
+    <string name="pedometer_title">Pedometer</string>
+    <string name="pedometer_steps">steps</string>
+
+    <string name="toast_sensor_not_found">L\'appareil n\'a pas de capteur de marche !</string>
+    <string name="notification_default">Test : Aucune marche pour le moment.</string>
+</resources>
