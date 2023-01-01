@@ -115,7 +115,6 @@ public class PedometerService extends Service implements SensorEventListener {
             text = getResources().getString(R.string.notification_default);
             builder = new NotificationCompat.Builder(this, channel.getId())
                     .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle(title)
                     .setContentText(text)
                     .setChannelId("service")
                     .setShowWhen(false)

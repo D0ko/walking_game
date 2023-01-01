@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">WalkingGame</string>
+    <string name="game_title">Walking Game</string>
+    <string name="steps">Steps</string>
+    <string name="content_description">content_description</string>
+    <string name="steps_number">0</string>
     <string name="main_title">MAIN</string>
     <string name="authority_title">Authority</string>
     <string name="pedometer_title">Pedometer</string>
