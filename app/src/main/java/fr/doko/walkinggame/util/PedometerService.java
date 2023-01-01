@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -30,11 +31,13 @@ public class PedometerService extends Service implements SensorEventListener {
     NotificationCompat.Builder builder;
     NotificationManager manager;
     PendingIntent pendingIntent;
-    Sensor mCounterSensor;
+    Sensor mDetectorSensor;
     SensorManager mSensorManager;
     private StepCallback callback;
     public static final String TAG = "PedometerService123";
     String title, text;
+    protected static final String SHARED_PREFS_NAME = "fr.doko.walking_game.DataStorage";
+    protected static final String N_STEPS_TAKEN = "N_STEPS_TAKEN";
 
     public class PedometerBinder extends Binder {
         public PedometerService getService() {
@@ -67,11 +70,10 @@ public class PedometerService extends Service implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-        if (sensorEvent.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
-            if (previousStep < 1) {
-                previousStep = (int) sensorEvent.values[0];
-            }
-            mSteps = (int) sensorEvent.values[0] - previousStep;
+        if (sensorEvent.sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
+            mSteps = getStepsFromSharedPreferences(this);
+            mSteps++;
+            addStepsToSharedPreferences(this, mSteps);
             if (builder != null) {
                 builder.setContentText("PAS: " + mSteps  + " !");
                 manager.notify(1000, builder.build());
@@ -89,11 +91,11 @@ public class PedometerService extends Service implements SensorEventListener {
 
     private void initStepSensor() {
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        mCounterSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-        if (mCounterSensor == null) {
+        mDetectorSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
+        if (mDetectorSensor == null) {
             Toast.makeText(getApplicationContext(), getResources().getString(R.string.toast_sensor_not_found), Toast.LENGTH_SHORT).show();
         } else {
-            mSensorManager.registerListener(this, mCounterSensor, SensorManager.SENSOR_DELAY_FASTEST);
+            mSensorManager.registerListener(this, mDetectorSensor, SensorManager.SENSOR_DELAY_FASTEST);
         }
     }
 
@@ -150,5 +152,19 @@ public class PedometerService extends Service implements SensorEventListener {
         super.onDestroy();
         unRegisterManager();
         stopForeground(true);
+    }
+
+    protected static void addStepsToSharedPreferences(Context context, int step) {
+        SharedPreferences mySharedPreferences = context.getSharedPreferences(SHARED_PREFS_NAME, 0);
+        SharedPreferences.Editor myEditor = mySharedPreferences.edit();
+        myEditor.putInt(N_STEPS_TAKEN, step);
+        myEditor.commit();
+
+    }
+
+    protected static int getStepsFromSharedPreferences(Context context) {
+        SharedPreferences mySharedPreferences = context.getSharedPreferences(SHARED_PREFS_NAME, 0);
+        int result = mySharedPreferences.getInt(N_STEPS_TAKEN, 0);
+        return result;
     }
 }
