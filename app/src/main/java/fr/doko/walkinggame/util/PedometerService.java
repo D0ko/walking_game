@@ -27,14 +27,11 @@ public class PedometerService extends Service implements SensorEventListener {
     public static int mSteps = 0;
     int previousStep = 0;
     private IBinder myBinder = new PedometerBinder();
-    Intent intent;
     NotificationCompat.Builder builder;
     NotificationManager manager;
-    PendingIntent pendingIntent;
     Sensor mDetectorSensor;
     SensorManager mSensorManager;
     private StepCallback callback;
-    public static final String TAG = "PedometerService123";
     String title, text;
     protected static final String SHARED_PREFS_NAME = "fr.doko.walking_game.DataStorage";
     protected static final String N_STEPS_TAKEN = "N_STEPS_TAKEN";
@@ -164,7 +161,6 @@ public class PedometerService extends Service implements SensorEventListener {
 
     protected static int getStepsFromSharedPreferences(Context context) {
         SharedPreferences mySharedPreferences = context.getSharedPreferences(SHARED_PREFS_NAME, 0);
-        int result = mySharedPreferences.getInt(N_STEPS_TAKEN, 0);
-        return result;
+        return mySharedPreferences.getInt(N_STEPS_TAKEN, 0);
     }
 }

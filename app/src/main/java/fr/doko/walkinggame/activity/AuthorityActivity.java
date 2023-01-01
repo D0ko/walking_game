@@ -1,7 +1,6 @@
 package fr.doko.walkinggame.activity;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
@@ -11,7 +10,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Toast;
 
 import fr.doko.walkinggame.R;
