@@ -1,5 +1,7 @@
 package fr.doko.walkinggame.util;
 
+import static fr.doko.walkinggame.activity.AuthorityActivity.getPseudoFromSharedPreferences;
+
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -15,10 +17,25 @@ import android.hardware.SensorManager;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
+import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.NetworkInterface;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import fr.doko.walkinggame.R;
 import fr.doko.walkinggame.activity.PedometerActivity;
@@ -35,6 +52,9 @@ public class PedometerService extends Service implements SensorEventListener {
     String title, text;
     protected static final String SHARED_PREFS_NAME = "fr.doko.walking_game.DataStorage";
     protected static final String N_STEPS_TAKEN = "N_STEPS_TAKEN";
+
+    private String pseudo;
+    private String MAC;
 
     public class PedometerBinder extends Binder {
         public PedometerService getService() {
@@ -65,6 +85,32 @@ public class PedometerService extends Service implements SensorEventListener {
         return START_STICKY;
     }
 
+    public static String getMacAddr() {
+        try {
+            List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
+            for (NetworkInterface nif : all) {
+                if (!nif.getName().equalsIgnoreCase("wlan0")) continue;
+
+                byte[] macBytes = nif.getHardwareAddress();
+                if (macBytes == null) {
+                    return "";
+                }
+
+                StringBuilder res1 = new StringBuilder();
+                for (byte b : macBytes) {
+                    res1.append(String.format("%02X:",b));
+                }
+
+                if (res1.length() > 0) {
+                    res1.deleteCharAt(res1.length() - 1);
+                }
+                return res1.toString();
+            }
+        } catch (Exception ex) {
+        }
+        return "02:00:00:00:00:00";
+    }
+
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         if (sensorEvent.sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
@@ -74,9 +120,47 @@ public class PedometerService extends Service implements SensorEventListener {
             if (builder != null) {
                 builder.setContentText("PAS: " + mSteps  + " !");
                 manager.notify(1000, builder.build());
+
+                pseudo = getPseudoFromSharedPreferences(this);
+                // pseudo = "Xaluss";
+                MAC = getMacAddr();
+                new Thread(new ClientThread_Send(MAC, pseudo, mSteps + "")).start();
+
+
             }
             if (callback != null) {
                 callback.onStepCallback(mSteps);
+            }
+        }
+    }
+
+    class ClientThread_Send implements Runnable {
+        private final String MAC;
+        private final String pseudo;
+        private final String nbr_pas;
+
+
+        ClientThread_Send(String MAC, String pseudo, String nbr_pas) {
+            this.MAC = MAC;
+            this.pseudo = pseudo;
+            this.nbr_pas = nbr_pas;
+        }
+        @Override
+        public void run() {
+            try {
+                Socket socket = new Socket("82.66.70.21", 44444);
+                Log.d("server connect", "Connected!");
+
+                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+
+                out.println("0" + "//-" + MAC + "//-" + pseudo + "//-" + nbr_pas);
+
+                in.close();
+                out.close();
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -162,4 +246,6 @@ public class PedometerService extends Service implements SensorEventListener {
         SharedPreferences mySharedPreferences = context.getSharedPreferences(SHARED_PREFS_NAME, 0);
         return mySharedPreferences.getInt(N_STEPS_TAKEN, 0);
     }
+
+
 }

@@ -6,6 +6,9 @@
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
     <uses-permission android:name="ACCESS_BACKGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.LOCAL_MAC_ADDRESS" />
 
     <application
         android:allowBackup="true"
@@ -14,16 +17,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WalkingGame">
-        <service android:name=".util.PedometerService"
+
+        <service
+            android:name=".util.PedometerService"
             android:enabled="true" />
+
         <activity android:name=".activity.AuthorityActivity" />
-        <activity android:name=".activity.PedometerActivity"
+        <activity android:name=".activity.ClassmentActivity" />
+        <activity
+            android:name=".activity.PedometerActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 
 </manifest>

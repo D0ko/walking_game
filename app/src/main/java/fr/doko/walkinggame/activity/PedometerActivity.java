@@ -12,6 +12,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -30,11 +32,20 @@ public class PedometerActivity extends AppCompatActivity {
     Intent serviceIntent;
     private PedometerService pedometerService;
     public static final String TAG = "PedometerService";
+    Button button_classment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_pedometer);
+
+        button_classment = findViewById(R.id.button_classment);
+        button_classment.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(PedometerActivity.this, ClassmentActivity.class);
+                startActivity(intent);
+            }
+        });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             if (ContextCompat.checkSelfPermission(this,

@@ -23,7 +23,6 @@
                 android:contentDescription="@string/content_description"
                 android:padding="10dp"
                 android:src="@drawable/back_button"
-                android:visibility="invisible"
                 tools:ignore="SpeakableTextPresentCheck,SpeakableTextPresentCheck,SpeakableTextPresentCheck" />
 
             <TextView
@@ -80,6 +79,15 @@
                         android:layout_centerInParent="true"
                         android:background="@drawable/circle"
                         android:contentDescription="@string/content_description" />
+
+                    <Button
+                        android:id="@+id/button_classment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Classment"
+                        android:layout_marginTop="600dp"
+                        android:layout_centerHorizontal="true" />
+
 
                 </RelativeLayout>
 
