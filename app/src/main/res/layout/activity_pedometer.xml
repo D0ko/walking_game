@@ -59,7 +59,7 @@
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="280dp"
                         android:text="@string/steps"
-                        android:textColor="@color/black"
+                        android:textColor="@color/bandeau"
                         android:textSize="45sp" />
 
                     <TextView
@@ -70,7 +70,7 @@
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="1dp"
                         android:text="@string/steps_number"
-                        android:textColor="@color/black"
+                        android:textColor="@color/bandeau"
                         android:textSize="37sp" />
 
                     <ImageView
